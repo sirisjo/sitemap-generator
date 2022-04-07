@@ -57,14 +57,14 @@ func NewSitemap(prettyPrint bool) *Sitemap {
 	}
 	s.Compress = true
 	s.prettyPrint = prettyPrint
-	s.content = bytes.Buffer{}
-	s.content.Write([]byte(xml.Header))
-	s.content.Write([]byte(xmlUrlsetOpenTag))
-	s.tempBuf = &bytes.Buffer{}
-	s.xmlEncoder = xml.NewEncoder(s.tempBuf)
+	s.Content = bytes.Buffer{}
+	s.Content.Write([]byte(xml.Header))
+	s.Content.Write([]byte(xmlUrlsetOpenTag))
+	s.TempBuf = &bytes.Buffer{}
+	s.XmlEncoder = xml.NewEncoder(s.tempBuf)
 	if prettyPrint {
-		s.content.Write([]byte{'\n'})
-		s.xmlEncoder.Indent("", "  ")
+		s.Content.Write([]byte{'\n'})
+		s.XmlEncoder.Indent("", "  ")
 	}
 	return s
 }
@@ -82,7 +82,7 @@ func (s *Sitemap) realAdd(u *SitemapLoc, locN int, locBytes []byte) error {
 		return nil
 	}
 
-	if s.urlsCount >= maxURLsCount {
+	if s.UrlsCount >= maxURLsCount {
 		s.buildNextSitemap()
 		return s.NextSitemap.realAdd(u, locN, locBytes)
 	}
@@ -100,7 +100,7 @@ func (s *Sitemap) realAdd(u *SitemapLoc, locN int, locBytes []byte) error {
 		}
 	}
 
-	if locN+s.content.Len() >= maxFileSize {
+	if locN+s.Content.Len() >= maxFileSize {
 		s.buildNextSitemap()
 		return s.NextSitemap.realAdd(u, locN, locBytes)
 	}
