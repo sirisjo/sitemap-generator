@@ -121,16 +121,16 @@ func (s *Sitemap) buildNextSitemap() {
 	s.NextSitemap.Name = s.Name
 	s.NextSitemap.Hostname = s.Hostname
 	s.NextSitemap.OutputPath = s.OutputPath
-	s.NextSitemap.fileNum = s.fileNum + 1
+	s.NextSitemap.FileNum = s.FileNum + 1
 }
 
 func (s *Sitemap) encodeToXML(loc *SitemapLoc) (int, []byte, error) {
-	err := s.xmlEncoder.Encode(loc)
+	err := s.XmlEncoder.Encode(loc)
 	if err != nil {
 		return 0, nil, err
 	}
-	defer s.tempBuf.Reset()
-	return s.tempBuf.Len(), s.tempBuf.Bytes(), nil
+	defer s.TempBuf.Reset()
+	return s.TempBuf.Len(), s.TempBuf.Bytes(), nil
 }
 
 // SetName sets the Name of Sitemap output xml file
@@ -183,7 +183,7 @@ func (s *Sitemap) SetCompress(compress bool) {
 
 // GetURLsCount returns the number of added URL items into this single sitemap.
 func (s *Sitemap) GetURLsCount() int {
-	return s.urlsCount
+	return s.UrlsCount
 }
 
 // Save makes the OutputPath in case of absence and saves the Sitemap into OutputPath using it's Name.
@@ -196,8 +196,8 @@ func (s *Sitemap) Save() (filenames []string, err error) {
 
 	// Appends the fileNum at the end of filename in case of more than 0 (it is extended Sitemap)
 	var filename string
-	if s.fileNum > 0 {
-		filename = fmt.Sprintf("%s%d", s.Name, s.fileNum)
+	if s.FileNum > 0 {
+		filename = fmt.Sprintf("%s%d", s.Name, s.FileNum)
 	} else {
 		filename = s.Name
 	}
@@ -214,7 +214,7 @@ func (s *Sitemap) Save() (filenames []string, err error) {
 	}
 	ending.Write([]byte(xmlUrlsetCloseTag))
 
-	_, err = writeToFile(filename, s.OutputPath, s.Compress, s.content.Bytes(), ending.Bytes())
+	_, err = writeToFile(filename, s.OutputPath, s.Compress, s.Content.Bytes(), ending.Bytes())
 
 	if s.NextSitemap != nil {
 		filenames, err = s.NextSitemap.Save()
