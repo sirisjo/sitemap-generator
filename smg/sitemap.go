@@ -61,7 +61,7 @@ func NewSitemap(prettyPrint bool) *Sitemap {
 	s.Content.Write([]byte(xml.Header))
 	s.Content.Write([]byte(xmlUrlsetOpenTag))
 	s.TempBuf = &bytes.Buffer{}
-	s.XmlEncoder = xml.NewEncoder(s.tempBuf)
+	s.XmlEncoder = xml.NewEncoder(s.TempBuf)
 	if prettyPrint {
 		s.Content.Write([]byte{'\n'})
 		s.XmlEncoder.Indent("", "  ")
@@ -105,11 +105,11 @@ func (s *Sitemap) realAdd(u *SitemapLoc, locN int, locBytes []byte) error {
 		return s.NextSitemap.realAdd(u, locN, locBytes)
 	}
 
-	_, err := s.content.Write(locBytes)
+	_, err := s.Content.Write(locBytes)
 	if err != nil {
 		return err
 	}
-	s.urlsCount++
+	s.UrlsCount++
 	return nil
 }
 
